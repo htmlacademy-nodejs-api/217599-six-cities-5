@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
@@ -28,7 +29,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",
