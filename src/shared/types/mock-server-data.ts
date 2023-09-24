@@ -1,8 +1,12 @@
+import { ApartmentType, Facility } from './advert.js';
+import { UserType } from './user.js';
+
 export type Author = {
   names: string[];
   emails: string[];
   avatars: string[];
   passwords: string[];
+  types: UserType[];
 };
 
 export type MockServerData = {
@@ -12,7 +16,7 @@ export type MockServerData = {
   cities: string[];
   previews: string[];
   photos: string[];
-  types: string[];
-  facilities: string[];
-  authors: Author[];
+  types: ApartmentType[];
+  facilities: Facility[];
+  author: Author;
 };

@@ -1,8 +1,9 @@
-import { Command } from './command.interface.js';
-import { CommandName } from './command.types.js';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import chalk from 'chalk';
+
+import { Command } from './command.interface.js';
+import { CommandName } from './command.types.js';
 
 type PackageJSONConfig = {
   version: string;

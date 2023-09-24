@@ -1,7 +1,9 @@
-import { FileReader } from './file-reader.interface.js';
 import { readFileSync } from 'node:fs';
+
+import { FileReader } from './file-reader.interface.js';
 import { Advert, ApartmentType, Facility } from 'src/shared/types/advert.js';
 import { UserType } from 'src/shared/types/user.js';
+import { Symbols } from '../../constants.js';
 
 export class TSVFileReader implements FileReader {
   private rawData = '';
@@ -18,9 +20,9 @@ export class TSVFileReader implements FileReader {
     }
 
     return this.rawData
-      .split('\n')
+      .split(Symbols.NEW_LINE)
       .filter((row) => row.trim().length > 0)
-      .map((line) => line.split('\t'))
+      .map((line) => line.split(Symbols.TAB))
       .map(
         ([
           title,
