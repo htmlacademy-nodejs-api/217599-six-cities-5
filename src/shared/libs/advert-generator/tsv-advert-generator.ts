@@ -29,7 +29,7 @@ const PredefinedValues = {
 export class TSVAdvertGenerator implements AdvertGenerator {
   constructor(private readonly mockData: MockServerData) {}
 
-  generate(): string {
+  public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
     const date = getRandomItem<Date>(this.mockData.dates);
