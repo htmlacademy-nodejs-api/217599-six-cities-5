@@ -17,6 +17,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "sourceMap": true,
     "outDir": "./dist",

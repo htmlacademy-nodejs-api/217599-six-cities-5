@@ -2,11 +2,11 @@ import { Command } from './command.interface.js';
 import { CommandName } from './command.types.js';
 
 export class HelpCommand implements Command {
-  getName(): string {
+  public getName(): string {
     return CommandName.HELP;
   }
 
-  execute(): void {
+  public execute(): void {
     console.info(`
         Программа для подготовки данных для REST API сервера.
         Пример:

@@ -1,70 +1,38 @@
+import { createReadStream } from 'node:fs';
+import EventEmitter from 'node:events';
+
 import { FileReader } from './file-reader.interface.js';
-import { readFileSync } from 'node:fs';
-import { Advert, ApartmentType, Facility } from 'src/shared/types/advert.js';
-import { UserType } from 'src/shared/types/user.js';
+import { Symbols } from '../../constants.js';
 
-export class TSVFileReader implements FileReader {
-  private rawData = '';
+const CHUNK_SIZE = 16000;
 
-  constructor(private readonly filename: string) {}
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, 'utf-8');
+export class TSVFileReader extends EventEmitter implements FileReader {
+  constructor(private readonly filename: string) {
+    super();
   }
 
-  public toArray(): Advert[] {
-    if (!this.rawData) {
-      throw new Error('File was not read');
+  public async read(): Promise<void> {
+    const readStream = createReadStream(this.filename, {
+      highWaterMark: CHUNK_SIZE,
+      encoding: 'utf-8',
+    });
+
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of readStream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf(Symbols.NEW_LINE)) >= 0) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        this.emit('line', completeRow);
+      }
     }
 
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim().length > 0)
-      .map((line) => line.split('\t'))
-      .map(
-        ([
-          title,
-          description,
-          date,
-          city,
-          preview,
-          photos,
-          isPremium,
-          isFavorite,
-          rate,
-          type,
-          roomCount,
-          guestCount,
-          cost,
-          facilities,
-          authorName,
-          authorEmail,
-          authorAvatar,
-          authorPassword,
-          authorType,
-        ]) => ({
-          title,
-          description,
-          date: new Date(date),
-          city,
-          preview,
-          photos: photos.split(';').map((photo) => photo),
-          isPremium: isPremium === 'true',
-          isFavorite: isFavorite === 'true',
-          rate: parseInt(rate, 10),
-          type: type as ApartmentType,
-          roomCount: parseInt(roomCount, 10),
-          guestCount: parseInt(guestCount, 10),
-          cost: parseInt(cost, 10),
-          facilities: facilities.split(';').map((facility) => facility) as Facility[],
-          author: {
-            name: authorName,
-            email: authorEmail,
-            avatar: authorAvatar,
-            password: authorPassword,
-            type: authorType as UserType,
-          },
-        }),
-      );
+    this.emit('end', importedRowCount);
   }
 }
