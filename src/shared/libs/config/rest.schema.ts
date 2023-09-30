@@ -21,7 +21,7 @@ export const configRestSchema = convict<RestSchema>({
   },
   SALT: {
     doc: 'Salt for password hash',
-    format: 'string',
+    format: String,
     env: 'SALT',
     default: null,
   },
