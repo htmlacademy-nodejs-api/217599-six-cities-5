@@ -1,11 +1,17 @@
-import { PinoLogger } from './shared/libs/logger/index.js';
+import { Logger, PinoLogger } from './shared/libs/logger/index.js';
 import { RestApplication } from './rest/index.js';
-import { RestConfig } from './shared/libs/config/rest.config.js';
+import { Config, RestConfig, RestSchema } from './shared/libs/config/index.js';
+import { Container } from 'inversify';
+import { Component } from './shared/types/index.js';
 
 const bootstrap = () => {
-  const logger = new PinoLogger();
-  const config = new RestConfig(logger);
-  const restApp = new RestApplication(logger, config);
+  const container = new Container();
+
+  container.bind<Logger>(Component.Logger).to(PinoLogger);
+  container.bind<Config<RestSchema>>(Component.Config).to(RestConfig);
+  container.bind<RestApplication>(Component.RestApplication).to(RestApplication);
+
+  const restApp = container.get<RestApplication>(Component.RestApplication);
 
   restApp.init();
 };
