@@ -18,22 +18,11 @@ export const isPackageJSONConfig = (value: unknown): value is PackageJSONConfig 
 export class VersionCommand implements Command {
   constructor(private readonly filePath = './package.json') {}
 
-  private getVersion() {
-    const content: string = readFileSync(resolve(this.filePath), 'utf-8');
-    const parsedContent = JSON.parse(content);
-
-    if (!isPackageJSONConfig(parsedContent)) {
-      throw new Error('Failed to parse json content.');
-    }
-
-    return parsedContent.version;
-  }
-
-  public getName(): string {
+  getName(): string {
     return CommandName.VERSION;
   }
 
-  public execute() {
+  execute() {
     try {
       const version = this.getVersion();
 
@@ -45,5 +34,16 @@ export class VersionCommand implements Command {
         console.error(error.message);
       }
     }
+  }
+
+  private getVersion() {
+    const content: string = readFileSync(resolve(this.filePath), 'utf-8');
+    const parsedContent = JSON.parse(content);
+
+    if (!isPackageJSONConfig(parsedContent)) {
+      throw new Error('Failed to parse json content.');
+    }
+
+    return parsedContent.version;
   }
 }
