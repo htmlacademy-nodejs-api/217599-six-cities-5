@@ -27,11 +27,11 @@ export class GenerateCommand implements Command {
     }
   }
 
-  public getName(): string {
+  getName(): string {
     return CommandName.GENERATE;
   }
 
-  public async execute(...params: string[]): Promise<void> {
+  async execute(...params: string[]): Promise<void> {
     const [count, filepath, url] = params;
     const advertCount = Number.parseInt(count, 10);
 
